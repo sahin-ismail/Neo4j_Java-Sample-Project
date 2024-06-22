@@ -1,0 +1,127 @@
+start server
+
+sudo docker start vigorous_dhawan
+
+stop server
+
+sudo docker stop vigorous_dhawan
+
+
+username neo4j
+password test
+
+Basics***********************************
+
+CREATE(n) => creates node
+
+MATCH(n) RETURN (n)  => return everything
+
+MATCH(n) DELETE (n)  => delete everything
+
+CREATE (n:Person) => Create type Person node (as label)
+
+CREATE (p)-[stu:STUDIED_AT]->(s) => Create relationship
+
+CREATE (n:Person:Teacher) => Creates multiple label node
+
+CREATE (n:School{name:'LSU'}) => Create type School node and name attribute
+
+MATCH(n:Person) RETURN (n) => See only Persons
+
+MATCH(n) RETURN (n) LIMIT 4 => Limit result to 4
+
+MATCH(n:Person) RETURN (n) LIMIT 1 => Return only 1 person
+
+MATCH(n:Person) WHERE ID(n)=0 DELETE (n) => Delete Person node where id = 0
+
+MATCH(s:School), (p:Person)
+WHERE s.name = 'LSU' AND p.name='jenny'
+CREATE (p)-[stu:STUDIED_AT]->(s) => Create a relationship that jenny studied at LSU school.
+
+MATCH(n) WHERE ID(n) = 5 DETACH DELETE (n) => Detach used to delete something that has relationship
+
+
+MATCH (s:Student), (u:University) WHERE s.Name='Shahzad Ahmed' and u.Name='Apcoms' CREATE (s)-[r:STUDIES_IN {Semester:8, GPA:3.5}]->(u) RETURN s,u => Give property to relationship
+
+
+Merge****************************
+
+Combination of MATCH and CREATE command
+
+MATCH (a:Student {Name:"Ali"}), (b:Teacher {Name:"Dr. Jehanzeb"})
+WHERE a.Name = "Ali" AND b.Name = "Dr. Jehanzeb"
+MERGE (a)-[r:Student_of]->(b)
+RETURN a,b => it look for matching thing in the database and if matchs it does not create
+
+Look at Merge Clause!!!!!!!!!!!!!!!!!
+
+
+CREATE (student) SET student.Name="Ali" RETURN student; => Create and Set property
+
+MATCH(student) SET student.BirthPlace="Islamba" SET student.DOB=1190 RETURN student; => Add multiple property
+
+MATCH(student {Name:"Ali"}) SET student:Student RETURN student; => Set label of node
+
+
+MATCH(teacher) SET teacher:Person:Teacher RETURN teacher;
+
+MATCH(node:Person:Teacher) DETACH DELETE (node) => delete selected label nodes
+
+MATCH (a {Name:"Shahzad"}) REMOVE a.Name RETURN a; => Removes property
+
+MATCH (a {Name:"Shahzad"}) REMOVE a.Name REMOVE a.DOB RETURN a; => remove multiple property
+
+MATCH (a:Student {Name:"Shahzad"}) REMOVE a:Student RETURN a; => remove label
+
+
+MATCH (a:Student {Name:"Shahzad"}) REMOVE a:Student REMOVE a.Student RETURN a; => remove label
+
+CREATE pattern = (shahzad {name:"Shahzad Ahmed"})-[:friend_of]->(nafees {name:"Nafeed Asghar"})-[:student_of]->(teacher {name:"Dr. Jehanzeb"}) RETURN pattern => Creating Pattern
+
+MATCH pattern = (shahzad)-[*]->(teacher)
+WHERE shahzad.name="Shahzad Ahmed" AND teacher.name="Dr. Jehanzeb"
+FOREACH (n IN nodes(pattern) | SET n.marked=TRUE) => sets a property for all nodes in that pattern.
+
+MATCH (n:Person) RETURN (n) => Get all Persons
+
+MATCH (student)-[:Student_of]->(teacher:Teacher {name: "Dr. Adnan Khaliq"}) RETURN student.name => Return student of Adnan
+
+
+MATCH (n) WHERE n.name="Nafees" RETURN n => Search with one condition
+
+MATCH (n) WHERE n.name="Nafees" AND n.GPA=3.5 RETURN n => Search with multiple condition
+
+MATCH (n) WHERE (n)-[:Topper_of]->({name:"Neo4j"}) RETURN n => Where clouse with relation
+
+
+MATCH (student:student) WHERE student.gpa > 3.0 RETURN COUNT(student) => gives count of students who has gpa that greater than 3.0
+
+
+MATCH (student:student) RETURN MAX(student.gpa) => gives max gpa in students
+
+MATCH (student:student) RETURN MIN(student.gpa) => gives min gpa in students
+
+MATCH (student:student) RETURN SUM(student.gpa) => give sum of gpas
+
+MATCH (student:student) RETURN AVG(student.gpa) => give average of gpas
+
+MATCH (student:student {name: "Tariq"}) RETURN CEIL(student.gpa) => (gpa of tariq is 3.5) this gives 4.0 
+
+MATCH (student:student {name: "Tariq"}) RETURN FLOOR(student.gpa) => (gpa of tariq is 3.5) this gives 3.0
+
+MATCH (n:student) RETURN toUPPER(n.name) => to uppercase
+
+MATCH (n:student) RETURN toLOWER(n.name) => to lowercase
+
+
+MATCH (n:student) RETURN SUBSTRING(n.name,1,5) => gives substring of name from 1 to 5 index.
+
+
+MATCH (n:student) RETURN REPLACE(n.name,'e','i') => replace all e's with i.
+
+
+MATCH (n:student) RETURN REPLACE(n.name,'e','i') => replace all e's with i.
+
+MATCH (n:student) RETURN SPLIT(n.name,' ') => it splits string according to delimeter ' '.
+
+
